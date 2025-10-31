@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
 import pool from '../database/postgres/mainDB.js';
 import ApiError from "../exceptions/apiError.js";
+import tokenService from "../services/tokenService.js";
 
 export default async function authMiddleware(request, reply) {
     try {
@@ -10,7 +10,7 @@ export default async function authMiddleware(request, reply) {
         const accessToken = authHeader.split(' ')[1];
         if (!accessToken) throw ApiError.UnauthorizedError();
 
-        const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+        const payload = await tokenService.validateAccessToken(accessToken);
         if (!payload) throw ApiError.UnauthorizedError();
 
         const initializedUser = await pool.query('SELECT id, username, created_at FROM users WHERE id=$1', [payload.id]);

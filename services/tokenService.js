@@ -29,7 +29,8 @@ class TokenService {
 
     async validateAccessToken(accessToken) {
         try {
-            return jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+            const payload = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+            return payload;
         } catch (e) {
             return null;
         }
