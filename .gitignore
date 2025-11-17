@@ -1,10 +1,15 @@
 # Node
 node_modules/
 npm-debug.log
-yarn.lock
+yarn-error.log
+pnpm-lock.yaml
 
-# env
+# Build output
+dist/
+
+# Env
 .env
+prisma/.env
 
 # IDE
 .idea/
@@ -13,3 +18,8 @@ yarn.lock
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+logs/
+*.log
+/src/generated/prisma
