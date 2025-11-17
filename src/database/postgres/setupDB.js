@@ -1,5 +1,6 @@
 import pkg from 'pg';
 import 'dotenv/config';
+import { env } from '../../config/env.js'
 
 const { Pool } = pkg;
 
@@ -9,10 +10,10 @@ const TARGET_DB = process.env.PG_DATABASE;
 console.log('PG_PASSWORD:', process.env.PG_PASSWORD);
 
 const systemPool = new Pool({
-    host: process.env.PG_HOST || 'localhost',
-    port: process.env.PG_PORT || 5432,
-    user: process.env.PG_USER || 'postgres',
-    password: process.env.PG_PASSWORD,
+    host: env.PG_HOST || 'localhost',
+    port: env.PG_PORT || 5432,
+    user: env.PG_USER || 'postgres',
+    password: env.PG_PASSWORD,
     database: SYSTEM_DB,
 });
 
