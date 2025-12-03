@@ -1,13 +1,11 @@
 import Redis from "ioredis";
-import { env } from "../../config/env";
+import Config from "../../config/env";
 
-const redis = new Redis({
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    password: env.REDIS_PASSWORD,
+export const redis = new Redis({
+    host: Config.String("REDIS_HOST"),
+    port: Config.Number("REDIS_PORT"),
+    password: Config.String("REDIS_PASSWORD") || undefined,
 });
-
-export type RedisClient = typeof redis;
 
 redis.on("connect", () => {
     console.log("Redis connected");
@@ -17,4 +15,4 @@ redis.on("error", (err: Error) => {
     console.error("Redis error:", err);
 });
 
-export default redis;
+export type RedisClient = typeof redis;

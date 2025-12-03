@@ -6,9 +6,11 @@ pnpm-lock.yaml
 
 # Build output
 dist/
+build/
 
 # Env
 .env
+*.env.local
 prisma/.env
 
 # IDE
@@ -23,3 +25,6 @@ Thumbs.db
 logs/
 *.log
 /src/generated/prisma
+
+
+**/.dockerignore
