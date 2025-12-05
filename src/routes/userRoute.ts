@@ -27,10 +27,10 @@ export default async function userRoute(
                 }
             }
         },
-        controller.authorizationUser
+        controller.getAuthorizationUser
     );
 
-    app.post(
+    app.put(
         "/change-password",
         {
             preHandler: [
@@ -46,6 +46,6 @@ export default async function userRoute(
                 body: ChangePasswordSchema,
             }
         },
-        controller.changedPassword
+        controller.changeUserPassword
     )
 }

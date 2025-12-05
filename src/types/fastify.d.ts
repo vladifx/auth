@@ -1,22 +1,23 @@
 import "fastify";
 import { RedisClient } from "../database/redis/redis";
 import { PrismaClient } from "@prisma/client";
-import { TokenPayload, TokenService } from "../services/tokenService";
+import { TokenManager } from "../managers/tokens/tokenManager";
+import { TokenPayload } from "../managers/tokens/interfaces"
 import { AuthService } from "../services/authService";
 import { UserService } from "../services/userService";
-import { SessionRepo } from "../repository/sessionRepo";
-import { MailService } from "../services/mailService";
+import { SessionManager } from "../plugins/sessionManager";
+import { MailClient } from "../clients/mailClient";
 
 declare module "fastify" {
     interface FastifyInstance {
         redis: RedisClient;
         prisma: PrismaClient;
-        tokenService: TokenService;
+        tokenManager: TokenManager;
+        sessionManager: SessionManager;
         authService: AuthService;
         userService: UserService;
         authenticate: typeof authMiddleware;
-        session: SessionRepo;
-        mailService: MailService;
+        mailClient: MailClient;
     }
 
     interface FastifyRequest {

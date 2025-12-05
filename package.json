@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env ./src/server.ts",
     "start": "node -r dotenv/config ./dist/server.js",
-    "build": "tsc",
-    "db": "node ./database/postgres/setupDB.js"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +24,6 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.11",
     "pg": "^8.16.3",
-    "uuid": "^13.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

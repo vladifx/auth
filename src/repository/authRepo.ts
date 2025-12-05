@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { Prisma } from "@prisma/client";
 
 export class AuthRepo {
     private prisma;
@@ -21,19 +22,10 @@ export class AuthRepo {
         });
     }
 
-    async verifyEmail(userId: string) {
+    async updateUserData(userId: string, data: Prisma.UserUpdateInput) {
         return this.prisma.user.update({
             where: { id: userId },
-            data: { isEmailVerified: true }
+            data
         });
-    }
-
-    async updatePassword(userId: string, newPassword: string) {
-        return this.prisma.user.update({
-            where: { id: userId },
-            data: {
-                password: newPassword,
-            }
-        })
     }
 }

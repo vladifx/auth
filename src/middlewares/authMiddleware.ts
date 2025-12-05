@@ -12,10 +12,10 @@ export async function authMiddleware(
         const token = authHeader.split(" ")[1];
         if (!token) throw ApiError.UnauthorizedError();
 
-        const payload = await request.server.tokenService.validateAccessToken(token);
+        const payload = await request.server.tokenManager.validateAccessToken(token);
         if (!payload) throw ApiError.UnauthorizedError();
 
-        const session = await request.server.session.getSession(payload.sessionId);
+        const session = await request.server.sessionManager.getSession(payload.sessionId);
         if (!session || session.userId !== payload.userId) throw ApiError.UnauthorizedError();
 
         request.user = payload;

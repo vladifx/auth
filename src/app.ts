@@ -5,13 +5,13 @@ import userRoute from "./routes/userRoute";
 import errorMiddleware from "./middlewares/errorMiddleware";
 import prismaPlugin from "./plugins/prisma";
 import redisPlugin from "./plugins/redis";
-import tokenPlugin from "./plugins/tokenService";
+import tokenPlugin from "./plugins/tokenManager";
 import authServicePlugin from "./plugins/authService";
 import userServicePlugin from "./plugins/userService";
 import authMiddlewarePlugin from "./plugins/authMiddleware";
-import sessionPlugin from "./plugins/sessionRepo";
+import sessionPlugin from "./plugins/sessionManager";
 import rateLimitPlugin from "./plugins/rateLimit";
-import emailPlugin from "./plugins/mailService";
+import mailPlugin from "./plugins/mailClient";
 
 export const buildApp = (options?: FastifyServerOptions): FastifyInstance => {
     const app = Fastify(options)
@@ -23,7 +23,7 @@ export const buildApp = (options?: FastifyServerOptions): FastifyInstance => {
     app.register(prismaPlugin);
     app.register(redisPlugin);
     app.register(tokenPlugin);
-    app.register(emailPlugin);
+    app.register(mailPlugin);
     app.register(authServicePlugin);
     app.register(sessionPlugin);
     app.register(authMiddlewarePlugin);

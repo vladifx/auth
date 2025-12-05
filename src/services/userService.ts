@@ -2,21 +2,22 @@ import { UserRepo } from "../repository/userRepo";
 import { FastifyInstance } from "fastify";
 import ApiError from "../exceptions/apiError";
 import bcrypt from "bcryptjs";
-import { SessionRepo } from "../repository/sessionRepo";
+import { SessionManager } from "../managers/session/sessionManager";
+import { TokenManager } from "../managers/tokens/tokenManager";
 
 export class UserService {
-    private users: UserRepo;
-    private session: SessionRepo;
-    private tokenService;
+    private userRepo: UserRepo;
+    private sessionManager: SessionManager;
+    private tokenManager: TokenManager;
 
     constructor(app: FastifyInstance) {
-        this.users = new UserRepo(app);
-        this.session = new SessionRepo(app);
-        this.tokenService = app.tokenService;
+        this.userRepo = new UserRepo(app);
+        this.sessionManager = app.sessionManager;
+        this.tokenManager = app.tokenManager;
     }
 
     async getUserProfile(id: string) {
-        const user = await this.users.findByIdAndCache(id);
+        const user = await this.userRepo.findByIdAndCache(id);
         if (!user) {
             throw ApiError.NotFound("User not found");
         }
@@ -25,7 +26,7 @@ export class UserService {
     };
 
     async changePassword(userId: string, oldPassword: string, newPassword: string) {
-        const user = await this.users.findByIdWithPassword(userId);
+        const user = await this.userRepo.findByIdWithPassword(userId);
         if (!user) {
             throw ApiError.NotFound("User not found");
         }
@@ -42,10 +43,10 @@ export class UserService {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 5);
-        await this.users.updatePassword(userId, hashedPassword);
+        await this.userRepo.updatePassword(userId, hashedPassword);
 
-        await this.tokenService.removeAllUserTokens(userId);
-        await this.session.deleteAllUserSessions(userId);
+        await this.tokenManager.removeAllUserTokens(userId);
+        await this.sessionManager.deleteAllUserSessions(userId);
 
         return { success: true };
     }

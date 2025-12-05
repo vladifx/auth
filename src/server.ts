@@ -10,9 +10,9 @@ const start = async () => {
 
     try {
         await app.listen({ port: Config.Number("PORT"), host: "0.0.0.0" });
-        console.info(`Server started on port: ${process.env.PORT}`)
+        app.log.info(`Server started on port: ${process.env.PORT}`)
     } catch (error) {
-        console.error(error);
+        app.log.error(error);
         process.exit(1);
     }
 }

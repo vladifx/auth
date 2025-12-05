@@ -3,7 +3,7 @@ import { ChangePasswordRequest } from "../schemas/user";
 
 export function userController (app: FastifyInstance) {
     return {
-        authorizationUser: async (
+        getAuthorizationUser: async (
             request: FastifyRequest,
             reply: FastifyReply
         )=> {
@@ -12,7 +12,7 @@ export function userController (app: FastifyInstance) {
             return reply.code(200).send(user);
         },
 
-        changedPassword: async (
+        changeUserPassword: async (
             request: FastifyRequest<{ Body: ChangePasswordRequest }>,
             reply: FastifyReply
         )=> {

@@ -1,11 +1,12 @@
 import nodemailer, { Transporter } from "nodemailer";
 import Config from "../config/env";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { FastifyInstance } from "fastify";
 
-export class MailService {
+export class MailClient {
     private transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
-    constructor() {
+    constructor(app: FastifyInstance) {
         const options: SMTPTransport.Options = {
             host: Config.String("SMTP_HOST"),
             port: Config.Number("SMTP_PORT"),

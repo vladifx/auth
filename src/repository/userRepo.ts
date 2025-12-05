@@ -1,15 +1,18 @@
 import { FastifyInstance } from "fastify";
 import { User } from "@prisma/client";
 import { USER_SELECT } from "../schemas/user";
+import { RedisClient } from "../clients/redisClient";
 
 export class UserRepo {
-    private redis;
+    private redisClient;
     private prisma;
 
     constructor(app: FastifyInstance) {
-        this.redis = app.redis;
+        this.redisClient = new RedisClient(app);
         this.prisma = app.prisma;
     }
+
+    private CACHE_TTL = 60 * 5   // 5 minutes
 
     private getCacheKey(id: string) {
         return `user_profile:${id}`;
@@ -18,14 +21,8 @@ export class UserRepo {
     async findByIdAndCache(id: string) {
         const key = this.getCacheKey(id);
 
-        const cached = await this.redis.get(key);
-        if (cached) {
-            try {
-                return JSON.parse(cached) as User;
-            } catch {
-                await this.redis.del(key);
-            }
-        }
+        const cache = await this.redisClient.getData<User>(key);
+        if (cache) return cache;
 
         const user = await this.prisma.user.findUnique({
             where: { id: id },
@@ -33,7 +30,7 @@ export class UserRepo {
         });
         if (!user) return null;
 
-        await this.redis.set(key, JSON.stringify(user), "EX", 300);
+        await this.redisClient.saveData(key, user, this.CACHE_TTL);
 
         return { ...user, createdAt: user.createdAt.toISOString() };
     }
