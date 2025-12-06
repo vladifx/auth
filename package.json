@@ -3,25 +3,36 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "db": "node ./database/postgres/setupDB.js"
+    "dev": "tsx watch --env-file=.env ./src/server.ts",
+    "start": "node -r dotenv/config ./dist/server.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ajv": "^8.17.1",
+    "@fastify/rate-limit": "^10.3.0",
+    "@prisma/client": "^6.19.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.1",
+    "fastify-plugin": "^5.1.0",
+    "fastify-type-provider-zod": "^6.1.0",
     "ioredis": "^5.8.1",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "nodemailer": "^7.0.11",
+    "pg": "^8.16.3",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.1",
+    "@types/nodemailer": "^7.0.4",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }
