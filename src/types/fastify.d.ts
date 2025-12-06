@@ -5,7 +5,7 @@ import { TokenManager } from "../managers/tokens/tokenManager";
 import { TokenPayload } from "../managers/tokens/interfaces"
 import { AuthService } from "../services/authService";
 import { UserService } from "../services/userService";
-import { SessionManager } from "../plugins/sessionManager";
+import { SessionManager } from "../managers/session/sessionManager";
 import { MailClient } from "../clients/mailClient";
 
 declare module "fastify" {
@@ -16,7 +16,7 @@ declare module "fastify" {
         sessionManager: SessionManager;
         authService: AuthService;
         userService: UserService;
-        authenticate: typeof authMiddleware;
+        authMiddleware: typeof authMiddleware;
         mailClient: MailClient;
     }
 

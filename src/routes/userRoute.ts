@@ -19,7 +19,7 @@ export default async function userRoute(
                 }
             },
             preHandler: [
-                app.authenticate,
+                app.authMiddleware,
             ],
             schema: {
                 response: {
@@ -34,7 +34,7 @@ export default async function userRoute(
         "/change-password",
         {
             preHandler: [
-                app.authenticate,
+                app.authMiddleware,
             ],
             config: {
                 rateLimit: {

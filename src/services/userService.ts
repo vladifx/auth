@@ -43,7 +43,7 @@ export class UserService {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 5);
-        await this.userRepo.updatePassword(userId, hashedPassword);
+        await this.userRepo.updateUserData(userId, { password: hashedPassword });
 
         await this.tokenManager.removeAllUserTokens(userId);
         await this.sessionManager.deleteAllUserSessions(userId);

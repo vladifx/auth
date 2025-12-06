@@ -3,13 +3,13 @@ import Config from "../config/env";
 import ApiError from "../exceptions/apiError"
 import { TokenManager } from "../managers/tokens/tokenManager";
 import { FastifyInstance } from "fastify";
-import { AuthRepo } from "../repository/authRepo";
+import { UserRepo } from "../repository/userRepo";
 import { SessionManager } from "../managers/session/sessionManager";
 import { RedisClient } from "../clients/redisClient";
 import { MailClient } from "../clients/mailClient";
 
 export class AuthService {
-    private authRepo: AuthRepo;
+    private userRepo: UserRepo;
     private tokenManager: TokenManager;
     private sessionManager: SessionManager;
     private mailClient: MailClient;
@@ -19,7 +19,7 @@ export class AuthService {
         this.tokenManager = app.tokenManager;
         this.sessionManager = new SessionManager(app);
         this.mailClient = new MailClient(app);
-        this.authRepo = new AuthRepo(app);
+        this.userRepo = new UserRepo(app);
         this.redisClient = new RedisClient(app);
     }
 
@@ -34,13 +34,13 @@ export class AuthService {
     }
 
     async registration(username: string, email: string, password: string) {
-        const candidate = await this.authRepo.findByEmail(email);
+        const candidate = await this.userRepo.findByEmail(email);
         if (candidate) {
             throw ApiError.BadRequest(`Username "${username}" already exists`);
         }
         const hashedPassword = await bcrypt.hash(password, 5);
 
-        const user = await this.authRepo.createUser(
+        const user = await this.userRepo.createUser(
             email,
             hashedPassword,
             username
@@ -54,7 +54,7 @@ export class AuthService {
     }
 
     async login(email: string, password: string) {
-        const user = await this.authRepo.findByEmail(email);
+        const user = await this.userRepo.findByEmail(email);
         if (!user) throw ApiError.BadRequest("User not found");
 
         const validPassword = await bcrypt.compare(password, user.password);
@@ -123,12 +123,12 @@ export class AuthService {
         if (!userId) throw ApiError.BadRequest("Activation link invalid or expired");
 
 
-        await this.authRepo.updateUserData(userId, { isEmailVerified: true } );
+        await this.userRepo.updateUserData(userId, { isEmailVerified: true } );
         await this.redisClient.deleteData(this.verifyKey(token));
     }
 
     async resendActivationLink(email: string) {
-        const user = await this.authRepo.findByEmail(email);
+        const user = await this.userRepo.findByEmail(email);
         if (!user) throw ApiError.BadRequest("User not found");
         if (user.isEmailVerified) throw ApiError.BadRequest("Email already activated");
 
@@ -140,7 +140,7 @@ export class AuthService {
     }
 
     async forgotPassword(email: string) {
-        const user = await this.authRepo.findByEmail(email);
+        const user = await this.userRepo.findByEmail(email);
         if (!user) throw ApiError.BadRequest("User not found");
         if (!user.isEmailVerified) {
             throw ApiError.Forbidden("Email not verified");
@@ -160,7 +160,7 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 5);
-        await this.authRepo.updateUserData(userId, { password: hashedPassword });
+        await this.userRepo.updateUserData(userId, { password: hashedPassword });
 
         await this.redisClient.deleteData(this.resetKey(token));
     }

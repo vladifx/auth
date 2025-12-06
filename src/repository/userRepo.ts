@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { USER_SELECT } from "../schemas/user";
 import { RedisClient } from "../clients/redisClient";
 
@@ -16,6 +16,20 @@ export class UserRepo {
 
     private getCacheKey(id: string) {
         return `user_profile:${id}`;
+    }
+
+    async createUser(email: string, password: string, username: string) {
+        return await this.prisma.user.create({
+            data: {
+                email: email,
+                password: password,
+                username: username,
+            }
+        });
+    }
+
+    async findByEmail(email: string) {
+        return await this.prisma.user.findUnique({ where: { email: email } });
     }
 
     async findByIdAndCache(id: string) {
@@ -46,12 +60,10 @@ export class UserRepo {
         });
     }
 
-    async updatePassword(userId: string, newPassword: string) {
+    async updateUserData(userId: string, data: Prisma.UserUpdateInput) {
         return this.prisma.user.update({
             where: { id: userId },
-            data: {
-                password: newPassword,
-            }
-        })
+            data
+        });
     }
 }
